@@ -7,7 +7,7 @@
 A practical project to Learn Nest API Development.
 
 ## Steps
-1. Rename '.env.template' to '.env'
+1. Rename '.env.template' to '.env' and change environment variables
 
 
 2. Create DB postgres container
@@ -16,5 +16,14 @@ A practical project to Learn Nest API Development.
  docker compose up -d 
 ```
 
-3. Use a client to Connect to the database teslo
+3. Use a client to Connect to the database teslo 
 
+4. Install packages 
+```bash
+  yarn add 
+```
+
+5. Run development environment
+```bash
+  yarn start:dev
+```
