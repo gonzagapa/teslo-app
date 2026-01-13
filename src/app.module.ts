@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -10,8 +11,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       database:process.env.DB_NAME,
       username:process.env.DB_USER,
       password:process.env.DB_PASSWORD,
-      port: Number(process.env.DB_PORT)
-    })
+      port: Number(process.env.DB_PORT),
+      synchronize:true,
+      autoLoadEntities:true
+    }),
+    ProductsModule
   ],
   controllers: [],
   providers: [],
