@@ -4,7 +4,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { Repository } from 'typeorm';
-import { NotFoundError } from 'rxjs';
+import { validate as IsUUID } from 'uuid';
+import { PaginatioDto } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -31,23 +32,28 @@ export class ProductsService {
     }
   }
 
-  //Todo:Pagination
-  async findAll() {
-    
+  async findAll(paginationDto:PaginatioDto) {
+    const {limit = 10, offset = 0} = paginationDto;
     try{
-      const product = await this.productRepository.find();
+      const product = await this.productRepository.find({
+        take:limit,
+        skip:offset
+      });
+
       return product
     }catch(e){
       this.handleExcpetion(e)
     }
-    return [];
   }
 
-  async findOne(id: string) {
+  async findOne(term: string) {
+    let product:Product|null = null;
     try{
-      const product = await this.productRepository.findBy({id:id})
-      if(!product){
-        throw new NotFoundException("product not found")
+      if(IsUUID(term)){
+
+        product = await this.productRepository.findOneBy({id:term})
+      }else{
+        product = await this.productRepository.findOneBy({slug:term})
       }
       return product;
     }catch(e){
