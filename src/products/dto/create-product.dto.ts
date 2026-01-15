@@ -32,4 +32,9 @@ export class CreateProductDto {
     @IsOptional()
     @IsString()
     gender?:string 
+
+    @IsString({each:true})
+    @IsArray()
+    @IsOptional()
+    tags:string[]
 }
