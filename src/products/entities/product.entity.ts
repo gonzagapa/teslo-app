@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { ProductImage } from "./product-image.entity";
 
 @Entity()
 export class Product {
@@ -46,6 +47,12 @@ export class Product {
         default:[]
     })
     tags:string[]
+
+
+    @OneToMany(()=> ProductImage,  //Relacion con la tabla ProductImage
+    (productImage) => productImage.product, //en que propiedad se conecta
+    {cascade:true})
+    images?:ProductImage[]
 
     @BeforeInsert() 
     checkSlug(){
