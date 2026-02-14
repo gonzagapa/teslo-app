@@ -51,7 +51,7 @@ export class Product {
 
     @OneToMany(()=> ProductImage,  //Relacion con la tabla ProductImage
     (productImage) => productImage.product, //en que propiedad se conecta
-    {cascade:true})
+    {cascade:true, eager:true})
     images?:ProductImage[]
 
     @BeforeInsert() 

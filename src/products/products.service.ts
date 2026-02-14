@@ -49,10 +49,16 @@ export class ProductsService {
     try{
       const product = await this.productRepository.find({
         take:limit,
-        skip:offset
+        skip:offset, 
+        relations:{
+          images:true //trae las imagenes asociadas al producto
+        } 
       });
 
-      return product
+      return product.map(product => ({
+        ...product,
+        images:product.images?.map(image => image.url) //transforma el array de ProductImages
+      }));
     }catch(e){
       this.handleExcpetion(e)
     }
@@ -65,15 +71,26 @@ export class ProductsService {
 
         product = await this.productRepository.findOneBy({id:term})
       }else{
-        let query = this.productRepository.createQueryBuilder();
+        let query = this.productRepository.createQueryBuilder("prod");
         product = await query.where("UPPER(title) =:title or slug =:slug", {
           title:term.toUpperCase(),
           slug:term.toLowerCase()
-        }).getOne();
+        })
+        .leftJoinAndSelect("prod.images","prod.images")
+        .getOne();
       }
-      return product;
     }catch(e){
       this.handleExcpetion(e)
+    }
+    if(!product) throw new NotFoundException(`product with id not found ${term}`);
+    return product;
+  }
+
+  async findOnePlain(term:string){
+    const {images = [], ...restProduct} = await this.findOne(term)
+    return {
+      ...restProduct,
+      images:images.map(image => image.url)
     }
   }
 
